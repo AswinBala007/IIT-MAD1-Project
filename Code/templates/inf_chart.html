@@ -1,0 +1,35 @@
+{% extends 'influencer_layout' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js Example</title>
+    <style>
+        .chart-container {
+            width: 30%;
+            margin: auto;
+        }
+        .charts{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="myCharts"></canvas>
+        <div class="charts">
+        <p id="sp">{{sp}}</p>
+        <p id="an">{{an}}</p>
+        <p id="tr">{{tr}}</p>
+        <p id="food">{{food}}</p>
+        <p id="ent">{{ent}}</p>
+        <p id="ot">{{ot}}</p>
+    </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/barCharts.js"></script>
+</body>
+</html>

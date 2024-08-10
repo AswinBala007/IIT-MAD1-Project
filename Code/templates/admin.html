@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .chart-container {
+            width: 30%;
+            margin: auto;
+        }
+        .charts{
+            display: none;
+            height: 200px;
+            width: 200px;
+        }
+        canvas
+        {
+            height: 200px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div> 
+        <a href="/login">
+        <button>Logout</button></a>
+        <h5>No of Users : {{total}}</h5>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Role</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.type}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <h5>No. of campaigns : {{tc}}</h5>
+        <table>
+            <tr>
+                <th>Campaign Name</th>
+                <th>Niche</th>
+            </tr>
+            {% for c in cam %}
+            <tr>
+                <td>{{c.name}}</td>
+                <td>{{c.niche}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h5>No of Users</h5>
+        <canvas id="myChart"></canvas>
+        <div class="charts">
+            <p id="ct">{{inf}}</p>
+            <p id="ct1">{{sp}}</p>
+        </div>
+        <h5>No of influencers based on niches</h5>
+        <canvas id="myCharts"></canvas>
+        <div class="charts">
+            <p id = "sport">{{sport}}</p>
+            <p id = "an">{{an}}</p>
+            <p id = "tr">{{tr}}</p>
+            <p id = "food">{{food}}</p>
+            <p id = "en">{{en}}</p>
+            <p id = "ot">{{ot}}</p>
+        </div>
+    </div>    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../static/chart.js"></script>
+    <script src="../static/barCharts.js"></script>
+</body>
+</html>

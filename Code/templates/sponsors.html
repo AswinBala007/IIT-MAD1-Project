@@ -1,0 +1,549 @@
+{% extends 'sponsor_layout.html' %}
+{% block content %}
+{%if request.path == '/sponsor'%}
+<div class="container content-section">
+    <div id="profile" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h3>Sponsor Profile</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong>{{sponsor.name}}</p>
+                <p><strong>Username:</strong> {{user.email}}</p>
+                <p><strong>Company:</strong> {{sponsor.companyName}}</p>
+                <p><strong>Industry:</strong> {{sponsor.industry}}</p>
+                <button type="button" class="btn btn-primary"  onclick="window.location.href='/sponsor/edit_profile'">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="container content-section">
+    <div id="campaigns" class="section">
+        <div >
+            <div class="card-header">
+                <h3>Your Campaigns</h3>
+                <strong><hr/></strong>
+            </div>
+            <div >
+                <div>
+                    {% for camp in campaign %}
+                    <p>{{ camp.name }}</p>
+                    <!-- Button to trigger the campaign details modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#campaignDetailsModal{{ camp.id }}">View</button>
+                    <hr/>
+                </div>
+                <!-- Campaign details modal -->
+                <div class="modal fade" id="campaignDetailsModal{{ camp.id }}" tabindex="-1" role="dialog" aria-labelledby="campaignDetailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="campaignDetailsModalLabel">{{ camp.name }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Display campaign details here -->
+                                <p>Campaign description: {{ camp.description }}</p>
+                                <p>Campaign start date: {{ camp.start_date }}</p>
+                                <p>Campaign end date: {{ camp.end_date }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% elif request.path == '/sponsor/edit_profile'%}
+<form id="editProfileForm" method="post" action="/sponsor/edit_profile">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{sponsor.name}}">
+    </div>
+    <div class="form-group">
+      <label for="company">Company</label>
+      <input type="text" class="form-control" id="company" name="company" value="{{sponsor.companyName}}">
+    </div>         
+    <div class="form-group">
+      <label for="industry">Industry</label>
+      <input type="text" class="form-control" id="industry" name="industry" value="{{sponsor.industry}}">
+    </div>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='/sponsor'">Cancel</button>
+  </form>
+
+{% elif request.path == '/sponsor/campaigns'%}
+<div class="container content-section">
+    <div id="campaigns" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h3>Campaigns</h3>
+            </div>
+            <div class="card-body">
+                {% for camp in campaign %}
+                    <div class="card" >
+                        <div class="card-header"><h5>{{ camp.name }}</h5></div>
+                        <div class="card-body">
+                            <p>Description: {{ camp.description }}</p>
+                            <p>Start date: {{ camp.start_date }}</p>
+                            <p>End date: {{ camp.end_date }}</p>
+                            <p>Budget: {{ camp.budget }}</p>
+                            <p>Niche: {{camp.niche}}</p>
+                            <p>Goals: {{ camp.goals }}</p>
+                            <p>Visibility: {{ camp.visibility }}</p>
+                            <button type="button" class="btn btn-warning" data-target="#viewCampaignModal{{camp.id}}" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}'">View</button>
+                            <button type="button" class="btn btn-primary"  data-target="#campaignDetailsModal{{ camp.id }}" onclick="window.location.href='/sponsor/edit_campaigns/{{camp.id}}'">Edit</button>
+                            <button type="button" class="btn btn-danger" data-target="#campaignDeleteModal{{camp.id}}" onclick="window.location.href='/sponsor/delete_campaign/{{camp.id}}'">Delete</button>
+                        </div>
+                    </div> <br/>                 
+                {% endfor %}
+            </div>
+        <button type="button" method="delete" class="btn btn-info" onclick="window.location.href='/sponsor/add_campaign'">Add</button>
+        </div>
+    </div>
+</div>
+
+{%elif request.path=='/sponsor/add_campaign'%}
+<div class="container content-section">
+    <div id="add" class="section">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="/sponsor/add_campaign">
+                    <div class="form-group">
+                        <label for="name">Campaign Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Campaign Description</label>
+                        <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" placeholder="dd-mm-yyyy">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" placeholder="dd-mm-yyyy">
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Budget</label>
+                        <input type="number" class="form-control" id="budget" name="budget">
+                    </div>
+                    <div class="form-group">
+                        <label for="goals">Goals</label>
+                        <textarea class="form-control" id="goals" name="goals"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="niche">Niche</label>
+                        <select class="form-control" id="niche" name="niche">
+                            <option value="Animal" >Animal</option>
+                            <option value="Travel" >Travel</option>
+                            <option value="Food" >Food</option>
+                            <option value="Entertainment" >Entertainment</option>
+                            <option value="Sport" >Sport</option>
+                            <option value="Others" >Others</option>
+                        </select>
+                    </div>                   
+                    <div class="form-group">
+                        <label for="visibility">Visibility</label>
+                        <select class="form-control" id="visibility" name="visibility">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Campaign</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% elif request.path == '/sponsor/find_influencers'%}
+<form class="d-flex mb-4" method="GET" action="{{ url_for('sponsors.find_influencers') }}">
+    <input class="form-control me-2 p-2 shadow-sm" type="search" name="search" placeholder="Search Influencers" aria-label="Search">
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+</form>
+<div class="container content-section">
+    <div id="find" class="section" >
+        <div class="card">
+            <div class="card-header">
+                <h3>Influencers</h3>
+            </div>
+            <div class="card-body">
+                {% for i in inf %}
+                <p>{{ i.name }}</p>
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#influencerModal{{ i.id }}">View</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href='/sponsor/find_influencers/request/{{i.id}}'">Request</button>
+                <hr/>
+                <br/>
+                {% endfor %}
+            
+            <!-- Influencer details modal -->
+            {% for i in inf %}
+                <div class="modal fade" id="influencerModal{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="influencerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="influencerModalLabel">{{ i.name }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Display influencer details here -->
+                                <p>Influencer name: {{ i.name }}</p>
+                                <p>Influencer category: {{ i.category }}</p>
+                                <p>Influencer Followers: {{i.followersCount}}</p>
+                                <p>Influencer Niche : {{i.niche}}</p>
+                                <!-- Add more details as needed -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{%elif request.path == "/sponsor/sponsor_stat"%}
+{%block style%}
+<style>
+
+    p{
+        display: none
+    }
+</style>
+{%endblock%}
+<div class="container content-section">
+    <div id="stats" class="section" >
+        <div class="card">
+            <div class="card-header">
+                <h3>Statistics</h3>
+            </div>
+            <div> 
+                <canvas id="myChart"></canvas>
+                <div class="charts">
+                    <p id="ct">{{pub}}</p>
+                    <p id="ct1">{{pri}}</p>
+                </div>
+            </div> 
+            <br>   
+            <div>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo nulla assumenda, odit expedita aspernatur veritatis amet accusantium est obcaecati explicabo quia mollitia doloremque cupiditate, quasi quis eaque asperiores minus similique.</p>
+                <canvas id="myCharts"></canvas>
+                <p id = "sport">{{sport}}</p>
+                <p id = "an">{{an}}</p>
+                <p id = "tr">{{tr}}</p>
+                <p id = "food">{{food}}</p>
+                <p id = "en">{{en}}</p>
+                <p id = "ot">{{ot}}</p>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../static/camp_charts.js"></script>
+<script src="../static/barCharts.js"></script>
+{%endblock%}
+
+{%elif request.path=="/sponsor/edit_campaigns/"~(camp.id)%}
+<div class="container content-section">
+    <div  id="edit" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h3>Edit Campaign</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/sponsor/edit_campaigns/{{camp.id}}">  
+                        <div class="form-group">
+                            <label for="name">Campaign Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ camp.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Campaign Description</label>
+                            <textarea class="form-control" id="description" name="description">{{ camp.description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ camp.start_date }}" placeholder="dd-mm-yyyy">
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ camp.end_date }}" placeholder="dd-mm-yyyy">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget">Budget</label>
+                            <input type="number" class="form-control" id="budget" name="budget" value="{{ camp.budget }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="goals">Goals</label>
+                            <textarea class="form-control" id="goals" name="goals">{{ camp.goals }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="niche">Niche</label>
+                            <select class="form-control" id="niche" name="niche">
+                                <option value="Animal" {% if camp.niche=="Animal"%}selected{%endif%}>Animal</option>
+                                <option value="Travel" {% if camp.niche=="Travel"%}selected{%endif%}>Travel</option>
+                                <option value="Food" {% if camp.niche=="Food"%}selected{%endif%}>Food</option>
+                                <option value="Entertainment" {% if camp.niche=="Entertainment"%}selected{%endif%}>Entertainment</option>
+                                <option value="Sport" {% if camp.niche=="Sport"%}selected{%endif%}>Sport</option>
+                                <option value="Others" {% if camp.niche=="Others"%}selected{%endif%}>Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="visibility">Visibility</label>
+                            <select class="form-control" id="visibility" name="visibility">
+                                <option value="public" {% if camp.visibility == 'public' %}selected{% endif %}>Public</option>
+                                <option value="private" {% if camp.visibility == 'private' %}selected{% endif %}>Private</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif request.path =='/sponsor/campaigns/'~(camp.id) %}
+<div class="container content-section">
+    <div id="campaign" class="section" >
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ camp.name }}</h3>
+            </div>
+            <div class="card-body">
+                <p>Description: {{ camp.description }}</p>
+                <p>Start Date: {{ camp.start_date }}</p>
+                <p>End Date: {{ camp.end_date }}</p>
+                <p>Budget: {{ camp.budget }}</p>
+                <p>Niche: {{camp.niche}}</p>
+                <p>Goals: {{ camp.goals }}</p>
+                <p>Visibility: {{ camp.visibility }}</p>
+            </div>
+    </div>
+    <br></br>
+    <div id="act" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h4>Active Requests</h3>
+            </div>
+            {% for act in actions %}
+            <div class="card-body">
+                <p>Ad Name: {{act.name}}</p>
+                 {%for infl in inf%}
+                 {%if act.influencer_id == infl.id%}
+                <p>Influencer-name: {{infl.name}}</p>
+                {%endif%}
+                {%endfor%}
+                <p>Status: {{act.status}}</p>
+                <!-- <button type="submit" class="btn btn-warning">View</button> -->
+                <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#AdDetailsModal" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/edit_ad_request/'">Edit</button> -->
+                 <br><br>
+                <button type="submit" class="btn btn-danger" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/delete_ad/{{act.id}}'">Delete</button>
+            </div>
+            <hr/>
+            {%endfor%}
+        </div>
+    </div>
+    <div id="ad" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h4>Requests sent</h4>
+            </div>
+            {% for ad in ads %}
+            <div class="card-body">
+                <p>Ad Name: {{ad.name}}</p>
+                 {%for infl in inf%}
+                 {%if ad.influencer_id == infl.id%}
+                <p>Influencer-name: {{infl.name}}</p>
+                {%endif%}
+                {%endfor%}
+                <!-- <p>AdRequest Message: {{ad.messages}}</p> -->
+                <!-- <p>Ad Requirements: {{ad.requirements}}</p> -->
+                <!-- <p>AdRequest Payment: {{ad.payment_amount}}</p> -->
+                <p>Status: {{ad.status}}</p>
+                <!-- <button type="submit" class="btn btn-warning">View</button> -->
+                <!-- <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#AdDetailsModal{{ ad.id }}" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/edit_ad_request/{{ad.id}}'">Edit</button> -->
+                 <!-- <br><br> -->
+                <button type="submit" class="btn btn-danger" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/delete_ad/{{ad.id}}'">Delete</button>
+            </div>
+            <hr/>
+            {%endfor%}
+        </div>
+    </div>
+    <div id="ad" class="section">
+        <div class="card">
+            <div class="card-header">
+                <h4>Requests received</h4>
+            </div>
+            {% for ad in received_ads %}
+            <div class="card-body">
+                <p>Ad Name: {{ad.name}}</p>
+                 {%for infl in inf%}
+                 {%if ad.influencer_id == infl.id%}
+                <p>Influencer-name: {{infl.name}}</p>
+                {%endif%}
+                {%endfor%}
+                <!-- <p>AdRequest Message: {{ad.messages}}</p> -->
+                <!-- <p>Ad Requirements: {{ad.requirements}}</p> -->
+                <!-- <p>AdRequest Payment: {{ad.payment_amount}}</p> -->
+                <p>Status: {{ad.status}}</p>
+                <button type="submit" class="btn btn-success" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/accept/{{ad.id}}'">Accept</button>
+                <button type="submit" class="btn btn-danger" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/reject/{{ad.id}}'">Reject</button>
+                <!-- <button -->
+                 {%endfor%}
+    </div>
+    <br><br>
+    {%if not actions%}
+    <button type="button" class="btn btn-info" onclick="window.location.href='/sponsor/campaigns/{{camp.id}}/add_requests'">Add Ad request</button>
+    {%endif%}
+</div>
+
+{%elif request.path=="/sponsor/campaigns/"~(camp.id)~"/add_requests"%}
+<div class="container content-section">
+    <form method="post" action="/sponsor/campaigns/{{camp.id}}/add_requests">
+        <label for="adname">Ad Name</label>
+        <br>
+        <input type="text" name="adname" for="adname"/>
+        <div class="form-group">
+            <label for="messages">Ad Message</label>
+            <textarea class="form-control" id="messages" name="messages" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id">Influencer</label>
+            <select class="form-control" id="influencer_id" name="influencer_id" required>
+                {% for infl in inf %}
+                <option value="{{ infl.id }}">{{ infl.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status" required>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+                <option value="completed">Completed</option>
+                <option value="processing">Work process</option>
+                <option value="negotiating">Negotiating</option>
+            </select>
+        </div> -->
+        <br/>
+        <button type="button" class="btn btn-success" onclick="window.location.href='/sponsor/find_influencers'">Find Influencers</button>
+        <br/>
+        <br/>
+        <button type="submit" class="btn btn-primary">Add Ad Request</button>
+    </form>
+</div>
+{%elif request.path=="/sponsor/campaigns/"~(camp.id)~"/edit_ad_request/"~(ad.id)%}
+<div class="container content-section">
+    <form method="post" action="/sponsor/campaigns/{{camp.id}}/edit_ad_request/{{ad.id}}">
+        <div class="form-group">
+            <label for="name">Ad Request Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ad.name}}" required>
+        </div>
+        <div class="form-group">
+            <label for="messages">Ad Message</label>
+            <textarea class="form-control" id="messages" name="messages" value="{{ad.messages}}" required>{{ad.messages}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="requirements">Ad Requirements</label>
+            <input type="text" class="form-control" id="requirements" name="requirements" value="{{ad.requirements}}" >
+        </div>
+        <div class="form-group">
+            <label for="payment_amount">Payment Amount</label>
+            <input type="number" class="form-control" id="payment_amount" name="payment_amount" value="{{ad.payment_amount}}" required>
+        </div>
+        <div class="form-group">
+            <label for="influencer_id">Influencer</label>
+            <select class="form-control" id="influencer_id" name="influencer_id" required>
+                {% for infl in inf %}
+                <option value="{{ infl.id }}">{{ infl.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status" required>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+                <option value="processing">Work process</option>
+                <option value="negotiating">Negotiating</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{%elif request.path == '/sponsor/edit_campaigns/'~(ad.id)%}
+<div class="container content-section">
+    <div class="modal fade" id="AdDetailsModal{{ ad.id }}" tabindex="-1" role="dialog" aria-labelledby="AdDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AdDetailsModalLabel">Edit Ad Request: {{ ad.name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/sponsor/campaigns/{{ad.id}}">
+                        <div class="form-group">
+                            <label for="name">AdRequest Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ ad.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="messages">Ad Message</label>
+                            <textarea class="form-control" id="messages" name="messages" value="{{ad.messages}}"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="requirements">Ad Requirements</label>
+                            <input type="number" class="form-control" id="requirements" name="requirements" value="{{ ad.requirements }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment_amount">Goals</label>
+                            <textarea class="form-control" id="payment_amount" name="payment_amount" value="{{ad.payment_amount}}">{{ ad.payment_amount }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">status</label>
+                            <select class="form-control" id="status" name="status">
+                                <option value="pending" {% if ad.status == 'pending' %}selected{% endif %}>pending</option>
+                                <option value="completed" {% if ad.status == 'completed' %}selected{% endif %}>completed</option>
+                                <option value="rejected" {% if ad.status == 'rejected' %}selected{%endif%}>rejected</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%elif request.path == '/sponsor/find_influencers/request'~(i.id)%}
+<div>
+    <label>Choose a campaign</label>
+    <select class="form-control" id="influencer_id" name="influencer_id" required>
+        {% for infl in i %}
+        <option value="{{ infl.id }}">{{ infl.name }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+{%else%}
+<div>
+    <h1>ELSE STATEMENT</h1>
+</div>
+{%endif%}
+{%endblock%}

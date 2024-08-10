@@ -1,0 +1,9 @@
+flask
+flask_smorest
+sqlalchemy
+flask-sqlalchemy
+flask-swagger-ui
+Flask-Migrate
+flask_login
+psycopg2
+marshmallow-sqlalchemy

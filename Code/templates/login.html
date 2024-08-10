@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .login-container {
+            margin-top: 50px;
+        }
+        .login-form {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <header>
+          {% block header %}{% endblock header %}
+          {% for category, message in get_flashed_messages(with_categories=true) %}
+          {% if category == "success" %}
+            <div class="flash {{ category }}" style="align-items: center; background-color: #41dc8e;">
+                <p>{{ message }}</p>
+            </div>
+            {% else %}
+            <div class="flash {{ category }}" style="align-items: center; background-color: #FF7F7F">
+                <p>{{ message }}</p>
+            </div>
+            {%endif %}
+          {% endfor %}
+        </header>
+      </section>
+<div class="container login-container">
+    <div class="login-form">
+        <h3 class="text-center">User Login</h3>
+        <form method="post">
+            <div class="form-group">
+                <label for="email">Username</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <p>New User ? <a href="register">Create Account</a></p>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
